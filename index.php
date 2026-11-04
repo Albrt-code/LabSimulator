@@ -9,7 +9,7 @@ $nombre_usuario = '';
 
 // Credenciales estáticas de prueba
 $usuario_correcto = "admin";
-$password_correcto = "12345";
+$password_correcto = "123456";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $_POST['usuario'] ?? '';

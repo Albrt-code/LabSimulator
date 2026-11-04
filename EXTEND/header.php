@@ -29,7 +29,7 @@
 <header class="ipn-header">
   <div class="header-container">
     <div class="brand-title">
-      <h1><a href="index.php" style="color: inherit; text-decoration: none;">MI PORTAL WEB</a></h1>
+      <h1><a href="index.php" style="color: inherit; text-decoration: none;">LabSimulator</a></h1>
       <span>Laboratorio de Simulación</span>
     </div>
   </div>
