@@ -1,0 +1,16 @@
+# Archivos y configuraciones de Visual Studio Code
+.vscode/
+
+# Configuración de entornos de servidores locales (WampServer / XAMPP)
+*.log
+*.tmp
+*.bak
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Credenciales o claves sensibles (base de datos o API Keys)
+config.local.php
+.env

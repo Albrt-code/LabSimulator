@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <h3>¡Bienvenido!</h3>
           <p><?php echo htmlspecialchars($nombre_usuario); ?></p>
         </div>
-        <p class="status-badge">Sesión iniciada mediante datos estáticos</p>
+        <p class="status-badge">Sesión iniciada correctamente</p>
         <a href="index.php" class="btn-login btn-logout">Cerrar Sesión</a>
       </div>
 
