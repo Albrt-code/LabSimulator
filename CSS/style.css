@@ -1,0 +1,310 @@
+/* ==========================================================================
+   ESTILOS GENERALES E INSTITUCIONALES (IPN & LABSIMULATOR)
+   ========================================================================== */
+
+:root {
+  --ipn-guinda: #6c1d45;
+  --ipn-guinda-oscuro: #4a132f;
+  --ipn-oro: #b38e5d;
+  --gob-verde: #0c231e;
+  --gob-gris-bg: #f5f5f5;
+  --text-primary: #333333;
+  --text-light: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--text-primary);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* --- HEADER Y NAVEGACIÓN --- */
+.top-gob-bar {
+  background-color: var(--gob-verde);
+  color: var(--text-light);
+  font-size: 0.85rem;
+  padding: 0.4rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-gob-links a {
+  color: var(--text-light);
+  margin-right: 1.5rem;
+  text-decoration: none;
+}
+
+.accessibility-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 1px 6px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.ipn-header {
+  background-color: #ffffff;
+  border-bottom: 4px solid var(--ipn-guinda);
+}
+
+.header-container {
+  padding: 1rem 1.5rem;
+}
+
+.brand-title h1 {
+  font-size: 1.5rem;
+  color: var(--ipn-guinda);
+  margin: 0;
+}
+
+.brand-title span {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.main-nav {
+  background-color: var(--ipn-guinda);
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  padding: 0 1.5rem;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.75rem 1.2rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-link:hover {
+  background-color: var(--ipn-guinda-oscuro);
+  color: var(--ipn-oro);
+}
+
+/* --- SECCIÓN DE LOGIN CENTRADO (PROBADO EN CHROME Y EDGE) --- */
+.login-page-bg {
+  background-color: #f3f4f6 !important;
+  flex: 1 0 auto;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 40px 20px !important;
+  width: 100% !important;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  background: #ffffff !important;
+  border-radius: 12px;
+  padding: 35px 30px;
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  border-top: 5px solid var(--ipn-guinda) !important;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.logo-badge {
+  width: 52px;
+  height: 52px;
+  background-color: var(--ipn-guinda);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px auto;
+}
+
+.login-header h3 {
+  color: var(--ipn-guinda);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.login-header p {
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #1f2937;
+  background-color: #f9fafb;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+}
+
+.form-group input:focus {
+  background-color: #ffffff;
+  border-color: var(--ipn-guinda);
+  box-shadow: 0 0 0 4px rgba(108, 29, 69, 0.15);
+}
+
+.btn-login {
+  width: 100%;
+  padding: 13px;
+  background-color: var(--ipn-guinda);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+
+.btn-login:hover {
+  background-color: var(--ipn-guinda-oscuro);
+}
+
+.alert-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.welcome-card {
+  text-align: center;
+}
+
+.user-avatar {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.status-badge {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.btn-logout {
+  background-color: #374151;
+}
+
+.btn-logout:hover {
+  background-color: #1f2937;
+}
+
+/* --- FOOTER ESTILO IPN --- */
+.ipn-footer {
+  width: 100%;
+  margin-top: auto;
+}
+
+.footer-top {
+  background-color: var(--gob-gris-bg);
+  border-top: 4px solid var(--ipn-oro);
+  padding: 2.5rem 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+}
+
+.footer-col h4 {
+  color: var(--ipn-guinda);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--ipn-oro);
+  padding-bottom: 0.3rem;
+  text-transform: uppercase;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-col ul li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer-col ul li a:hover {
+  color: var(--ipn-guinda);
+  text-decoration: underline;
+}
+
+.footer-bottom-gob {
+  background-color: var(--ipn-guinda);
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.footer-legal-text {
+  max-width: 900px;
+  margin: 0 auto 0.8rem auto;
+  line-height: 1.4;
+}
+
+.copyright-notice {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
