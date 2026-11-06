@@ -28,72 +28,234 @@ body {
 }
 
 /* --- HEADER Y NAVEGACIÓN --- */
-.top-gob-bar {
-  background-color: var(--gob-verde);
-  color: var(--text-light);
-  font-size: 0.85rem;
-  padding: 0.4rem 1.5rem;
+.upiicsa-header {
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.upiicsa-header__top {
+  background: linear-gradient(90deg, #6e1f3f 0%, #6b1c40 35%, #5d1838 100%);
+  min-height: 86px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
-.top-gob-links a {
-  color: var(--text-light);
-  margin-right: 1.5rem;
-  text-decoration: none;
-}
-
-.accessibility-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
-  padding: 1px 6px;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.ipn-header {
-  background-color: #ffffff;
-  border-bottom: 4px solid var(--ipn-guinda);
-}
-
-.header-container {
-  padding: 1rem 1.5rem;
-}
-
-.brand-title h1 {
-  font-size: 1.5rem;
-  color: var(--ipn-guinda);
-  margin: 0;
-}
-
-.brand-title span {
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.main-nav {
-  background-color: var(--ipn-guinda);
-}
-
-.nav-list {
+.upiicsa-header__inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
   display: flex;
-  list-style: none;
-  padding: 0 1.5rem;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.nav-link {
+.upiicsa-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.upiicsa-brand__logo {
   display: block;
-  padding: 0.75rem 1.2rem;
-  color: white;
+  width: auto;
+  height: 62px;
+  max-width: 90px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.upiicsa-brand__name {
+  color: #fff;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+.upiicsa-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  color: #fff;
+}
+
+.upiicsa-nav a {
+  color: #fff;
   text-decoration: none;
+  font-size: 1.05rem;
   font-weight: 600;
 }
 
-.nav-link:hover {
-  background-color: var(--ipn-guinda-oscuro);
-  color: var(--ipn-oro);
+.search-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.upiicsa-header__subnav {
+  background: #f4f4f4;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+}
+
+.upiicsa-header__subnav-inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: #3d3d3d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.upiicsa-header__subnav a {
+  color: #2f2f2f;
+  text-decoration: none;
+}
+
+.upiicsa-header__subnav span {
+  color: #9a9a9a;
+}
+
+.site-header {
+  background: #ffffff;
+  border-bottom: 4px solid var(--ipn-guinda);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.site-header__inner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 30px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.site-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 76px;
+}
+
+.site-brand__mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--ipn-guinda);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.site-brand__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.site-brand__text h1 {
+  margin: 0;
+  color: var(--ipn-guinda);
+  font-size: clamp(1.7rem, 2.2vw, 2.5rem);
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.site-brand__text span {
+  color: #4a4a4a;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--ipn-guinda);
+  padding: 12px 20px;
+  border-radius: 0 0 0 0;
+  min-height: 54px;
+  margin-left: auto;
+}
+
+.site-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  transition: opacity 0.2s ease;
+}
+
+.site-nav a:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .upiicsa-header__inner,
+  .upiicsa-header__subnav-inner {
+    padding: 0 18px;
+  }
+
+  .upiicsa-nav {
+    gap: 0.8rem;
+  }
+
+  .upiicsa-nav a {
+    font-size: 0.9rem;
+  }
+
+  .upiicsa-header__subnav-inner {
+    gap: 8px 10px;
+    font-size: 0.72rem;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .site-header__inner {
+    padding: 18px 18px 0;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-brand {
+    width: 100%;
+  }
+
+  .site-nav {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
 }
 
 /* --- SECCIÓN DE LOGIN CENTRADO (PROBADO EN CHROME Y EDGE) --- */
