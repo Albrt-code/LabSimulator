@@ -8,40 +8,51 @@
 </head>
 <body>
 
-<!-- Barra Superior Institucional -->
-<div class="top-gob-bar">
-  <div class="top-gob-container">
-    <div class="top-gob-links">
-      <a href="#">Trámites</a>
-      <a href="#">Gobierno</a>
-      <a href="#">Directorio</a>
-      <a href="#">Correo</a>
-    </div>
-    <div class="accessibility-controls">
-      <button type="button" class="accessibility-btn" aria-label="Aumentar texto">A+</button>
-      <button type="button" class="accessibility-btn" aria-label="Reducir texto">A-</button>
-      <button type="button" class="accessibility-btn" aria-label="Texto normal">A</button>
-    </div>
-  </div>
-</div>
+<header class="upiicsa-header" aria-label="Cabecera del sitio">
+  <div class="upiicsa-header__top">
+    <div class="upiicsa-header__inner">
+      <div class="upiicsa-brand">
+        <img
+          class="upiicsa-brand__logo"
+          src="ASSETS/img/upiicsa-logo.png"
+          alt="UPIICSA"
+        >
+        <span class="upiicsa-brand__name">UPIICSA</span>
+      </div>
 
-<!-- Header / Menú Principal IPN -->
-<header class="ipn-header">
-  <div class="header-container">
-    <div class="brand-title">
-      <h1><a href="index.php" style="color: inherit; text-decoration: none;">LabSimulator</a></h1>
-      <span>Laboratorio de Simulación</span>
+      <nav class="upiicsa-nav" aria-label="Menú principal">
+        <a href="#">Trámites</a>
+        <a href="#">Gobierno</a>
+        <button class="search-btn" type="button" aria-label="Buscar">
+          <span aria-hidden="true">⌕</span>
+        </button>
+      </nav>
     </div>
   </div>
 
-  <nav class="main-nav">
-    <div class="nav-container">
-      <ul class="nav-list">
-        <li class="nav-item"><a href="index.php" class="nav-link">Inicio</a></li>
-        <li class="nav-item"><a href="oferta.php" class="nav-link">Oferta Educativa</a></li>
-        <li class="nav-item"><a href="investigacion.php" class="nav-link">Investigación</a></li>
-        <li class="nav-item"><a href="contacto.php" class="nav-link">Contacto</a></li>
-      </ul>
+  <div class="site-header">
+    <div class="site-header__inner">
+      <div class="site-brand" aria-label="LabSimulator">
+        <div class="site-brand__mark" aria-hidden="true">LS</div>
+        <div class="site-brand__text">
+          <h1>LabSimulator</h1>
+          <span>Simulador de laboratorio de física experimental</span>
+        </div>
+      </div>
     </div>
-  </nav>
+  </div>
+
+  <div class="upiicsa-header__subnav" aria-label="Accesos rápidos">
+    <div class="upiicsa-header__subnav-inner">
+      <a href="#">DIRECTORIO</a>
+      <span>|</span>
+      <a href="#">CORREO</a>
+      <span>|</span>
+      <a href="#">CALENDARIO</a>
+      <span>|</span>
+      <a href="#">TRANSPARENCIA</a>
+      <span>|</span>
+      <a href="#">PROTECCIÓN DE DATOS</a>
+    </div>
+  </div>
 </header>
