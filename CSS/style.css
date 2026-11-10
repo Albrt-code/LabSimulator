@@ -1,289 +1,209 @@
 /* ==========================================================================
-   ESTILOS GENERALES E INSTITUCIONALES (IPN & LABSIMULATOR)
+   ESTILOS INSTITUCIONALES IPN - UPIICSA & LABSIMULATOR
    ========================================================================== */
 
+/* 1. VARIABLES GLOBALES DE DISEÑO */
 :root {
+  /* Paleta Oficial IPN & UPIICSA */
   --ipn-guinda: #6c1d45;
   --ipn-guinda-oscuro: #4a132f;
+  --ipn-guinda-claro: #8c265c;
   --ipn-oro: #b38e5d;
+  --ipn-oro-claro: #d4a359;
+
+  /* Colores de Gobierno & Entorno */
   --gob-verde: #0c231e;
   --gob-gris-bg: #f5f5f5;
+  --gob-border: #e0e0e0;
+
+  /* Textos y Fondos */
   --text-primary: #333333;
+  --text-secondary: #666666;
   --text-light: #ffffff;
+  --bg-white: #ffffff;
+
+  /* Fuentes & Sombras */
+  --font-main: "Segoe UI", Arial, sans-serif;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --transition-fast: all 0.3s ease;
 }
 
+/* 2. RESET Y REGLAS BASE */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: var(--font-main);
   color: var(--text-primary);
-  background-color: #ffffff;
+  background-color: var(--bg-white);
+  line-height: 1.6;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* --- HEADER Y NAVEGACIÓN --- */
-.upiicsa-header {
-  width: 100%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+main,
+.main-content {
+  flex: 1 0 auto;
 }
 
-.upiicsa-header__top {
-  background: linear-gradient(90deg, #6e1f3f 0%, #6b1c40 35%, #5d1838 100%);
-  min-height: 86px;
-  display: flex;
-  align-items: center;
-}
-
-.upiicsa-header__inner {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.upiicsa-brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  color: #fff;
-  font-weight: 700;
-}
-
-.upiicsa-brand__logo {
-  display: block;
-  width: auto;
-  height: 62px;
-  max-width: 90px;
-  object-fit: contain;
-  background: #fff;
-}
-
-.upiicsa-brand__name {
-  color: #fff;
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
-}
-
-.upiicsa-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.8rem;
-  color: #fff;
-}
-
-.upiicsa-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-
-.search-btn {
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  background: transparent;
-  color: #fff;
-  font-size: 1.3rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.upiicsa-header__subnav {
-  background: #f4f4f4;
-  border-top: 1px solid rgba(0, 0, 0, 0.04);
-  min-height: 42px;
-  display: flex;
-  align-items: center;
-}
-
-.upiicsa-header__subnav-inner {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 32px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  color: #3d3d3d;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.upiicsa-header__subnav a {
-  color: #2f2f2f;
-  text-decoration: none;
-}
-
-.upiicsa-header__subnav span {
-  color: #9a9a9a;
-}
-
-.site-header {
-  background: #ffffff;
-  border-bottom: 4px solid var(--ipn-guinda);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.site-header__inner {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px 30px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.site-brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 76px;
-}
-
-.site-brand__mark {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--ipn-guinda);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-}
-
-.site-brand__text {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.site-brand__text h1 {
-  margin: 0;
+a {
   color: var(--ipn-guinda);
-  font-size: clamp(1.7rem, 2.2vw, 2.5rem);
-  line-height: 1.1;
-  font-weight: 800;
+  text-decoration: none;
+  transition: var(--transition-fast);
 }
 
-.site-brand__text span {
-  color: #4a4a4a;
-  font-size: 0.76rem;
-  letter-spacing: 0.04em;
-  text-transform: none;
+a:hover {
+  color: var(--ipn-guinda-oscuro);
+  text-decoration: underline;
 }
 
-.site-nav {
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* 3. BARRA VERDE SUPERIOR DE GOBIERNO */
+.top-gob-bar {
+  background-color: var(--gob-verde) !important;
+  color: var(--text-light) !important;
+  font-size: 0.85rem;
+  padding: 6px 20px;
+  width: 100%;
+}
+
+.top-gob-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.top-gob-links {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.top-gob-links a {
+  color: var(--text-light) !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.top-gob-links a:hover {
+  color: var(--ipn-oro-claro) !important;
+  text-decoration: underline;
+}
+
+/* Controles de accesibilidad (A+, A-, A) */
+.accessibility-controls {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
-  flex-wrap: wrap;
-  background: var(--ipn-guinda);
+  gap: 4px;
+}
+
+.accessibility-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--text-light);
+  padding: 1px 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: var(--transition-fast);
+}
+
+.accessibility-btn:hover {
+  background-color: var(--ipn-guinda);
+  border-color: var(--ipn-guinda);
+}
+
+/* 4. ENCABEZADO PRINCIPAL (IPN & UPIICSA) */
+header.ipn-header {
+  background-color: var(--bg-white);
+  border-bottom: 4px solid var(--ipn-guinda);
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+}
+
+.header-container {
   padding: 12px 20px;
-  border-radius: 0 0 0 0;
-  min-height: 54px;
-  margin-left: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
-.site-nav a {
-  color: #fff;
-  text-decoration: none;
+.brand-title h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: var(--ipn-guinda);
   font-weight: 700;
+}
+
+.brand-title span {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: block;
+}
+
+.user-session-info {
+  text-align: right;
   font-size: 0.9rem;
-  padding: 8px 12px;
-  transition: opacity 0.2s ease;
 }
 
-.site-nav a:hover {
-  opacity: 0.9;
-}
-
-@media (max-width: 768px) {
-  .upiicsa-header__inner,
-  .upiicsa-header__subnav-inner {
-    padding: 0 18px;
-  }
-
-  .upiicsa-nav {
-    gap: 0.8rem;
-  }
-
-  .upiicsa-nav a {
-    font-size: 0.9rem;
-  }
-
-  .upiicsa-header__subnav-inner {
-    gap: 8px 10px;
-    font-size: 0.72rem;
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-
-  .site-header__inner {
-    padding: 18px 18px 0;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .site-brand {
-    width: 100%;
-  }
-
-  .site-nav {
-    width: 100%;
-    justify-content: flex-start;
-    margin-left: 0;
-  }
-}
-
-/* --- SECCIÓN DE LOGIN CENTRADO (PROBADO EN CHROME Y EDGE) --- */
+/* 5. VISTA DE INICIO DE SESIÓN CENTRADO (INDEX.PHP) */
 .login-page-bg {
   background-color: #f3f4f6 !important;
-  flex: 1 0 auto;
+  min-height: calc(100vh - 350px);
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 40px 20px !important;
-  width: 100% !important;
+  padding: 50px 20px !important;
+  width: 100%;
 }
 
 .login-wrapper {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .login-card {
   width: 100%;
-  background: #ffffff !important;
+  background: var(--bg-white) !important;
   border-radius: 12px;
   padding: 35px 30px;
   box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.1),
-    0 2px 6px rgba(0, 0, 0, 0.05);
+    0 10px 25px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04);
   border: 1px solid #e5e7eb;
   border-top: 5px solid var(--ipn-guinda) !important;
 }
@@ -297,7 +217,7 @@ body {
   width: 52px;
   height: 52px;
   background-color: var(--ipn-guinda);
-  color: #ffffff;
+  color: var(--text-light);
   font-weight: 800;
   font-size: 1.2rem;
   border-radius: 50%;
@@ -305,6 +225,7 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0 auto 12px auto;
+  box-shadow: 0 4px 10px rgba(108, 29, 69, 0.25);
 }
 
 .login-header h3 {
@@ -331,6 +252,7 @@ body {
   color: #374151;
   margin-bottom: 6px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .form-group input {
@@ -342,10 +264,11 @@ body {
   border: 1.5px solid #d1d5db;
   border-radius: 8px;
   outline: none;
+  transition: all 0.2s ease;
 }
 
 .form-group input:focus {
-  background-color: #ffffff;
+  background-color: var(--bg-white);
   border-color: var(--ipn-guinda);
   box-shadow: 0 0 0 4px rgba(108, 29, 69, 0.15);
 }
@@ -354,7 +277,7 @@ body {
   width: 100%;
   padding: 13px;
   background-color: var(--ipn-guinda);
-  color: #ffffff;
+  color: var(--text-light);
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -363,10 +286,14 @@ body {
   text-align: center;
   text-decoration: none;
   display: block;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
 .btn-login:hover {
   background-color: var(--ipn-guinda-oscuro);
+  text-decoration: none;
 }
 
 .alert-error {
@@ -382,46 +309,26 @@ body {
   gap: 8px;
 }
 
-.welcome-card {
-  text-align: center;
-}
-
-.user-avatar {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-}
-
-.status-badge {
-  background-color: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  margin-bottom: 20px;
-}
-
-.btn-logout {
-  background-color: #374151;
-}
-
-.btn-logout:hover {
-  background-color: #1f2937;
-}
-
-/* --- FOOTER ESTILO IPN --- */
-.ipn-footer {
+/* 6. PIE DE PÁGINA (FOOTER INSTITUCIONAL IPN) */
+footer.ipn-footer,
+.footer-ipn {
   width: 100%;
   margin-top: auto;
 }
 
-.footer-top {
+.footer-top,
+.footer-links-section {
   background-color: var(--gob-gris-bg);
   border-top: 4px solid var(--ipn-oro);
   padding: 2.5rem 1.5rem;
+}
+
+.footer-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .footer-col h4 {
@@ -433,17 +340,12 @@ body {
   text-transform: uppercase;
 }
 
-.footer-col ul {
-  list-style: none;
-}
-
 .footer-col ul li {
   margin-bottom: 0.5rem;
 }
 
 .footer-col ul li a {
   color: var(--text-primary);
-  text-decoration: none;
   font-size: 0.9rem;
 }
 
@@ -452,10 +354,11 @@ body {
   text-decoration: underline;
 }
 
-.footer-bottom-gob {
+.footer-bottom-gob,
+.footer-info-section {
   background-color: var(--ipn-guinda);
-  color: white;
-  padding: 1.5rem;
+  color: var(--text-light);
+  padding: 1.5rem 1rem;
   text-align: center;
   font-size: 0.85rem;
 }
@@ -468,5 +371,29 @@ body {
 
 .copyright-notice {
   font-size: 0.75rem;
-  opacity: 0.8;
+  opacity: 0.85;
+}
+
+/* 7. ADAPTABILIDAD MÓVIL (RESPONSIVE DESIGN) */
+@media (max-width: 768px) {
+  .top-gob-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .header-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .user-session-info {
+    text-align: center;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
 }
