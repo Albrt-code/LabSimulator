@@ -32,24 +32,122 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['subir_material'])) {
     $num_parcial = intval($_POST['num_parcial']);
     $id_asignatura = intval($_POST['id_asignatura']);
     $titulo_material = trim($_POST['titulo_material']);
-    
-    // Gestión de subida de archivo PDF
-    if (isset($_FILES['archivo_pdf']) && $_FILES['archivo_pdf']['error'] == 0) {
-        $dir_destino = "../guias/";
-        if (!file_exists($dir_destino)) { mkdir($dir_destino, 0777, true); }
-        
-        $nombre_archivo = time() . "_" . basename($_FILES['archivo_pdf']['name']);
-        $ruta_final = $dir_destino . $nombre_archivo;
+    $mensaje_pdf = "";
 
-        if (move_uploaded_file($_FILES['archivo_pdf']['tmp_name'], $ruta_final)) {
-            $sql_mat = "INSERT INTO materiales_parcial (id_asignatura, num_parcial, titulo_material, archivo_pdf, boleta_docente) 
-                        VALUES (?, ?, ?, ?, ?)";
-            $stmt_m = mysqli_prepare($conexion, $sql_mat);
-            mysqli_stmt_bind_param($stmt_m, "iisss", $id_asignatura, $num_parcial, $titulo_material, $ruta_final, $_SESSION['boleta']);
-            mysqli_stmt_execute($stmt_m);
-            $mensaje_pdf = "Material didáctico asignado al Parcial $num_parcial con éxito.";
+    if ($num_parcial < 1 || $num_parcial > 3 || $titulo_material === '') {
+        $mensaje_pdf = "Datos incompletos para publicar el material.";
+    } elseif (!isset($_FILES['archivo_pdf']) || $_FILES['archivo_pdf']['error'] !== UPLOAD_ERR_OK) {
+        $mensaje_pdf = "No fue posible recibir el archivo.";
+    } else {
+        $archivo = $_FILES['archivo_pdf'];
+
+        if ($archivo['size'] > 10 * 1024 * 1024) {
+            $mensaje_pdf = "El archivo excede el tamaño máximo de 10 MB.";
+        } else {
+            $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime_tipo = finfo_file($finfo, $archivo['tmp_name']);
+            finfo_close($finfo);
+
+            if ($extension !== 'pdf' || $mime_tipo !== 'application/pdf') {
+                $mensaje_pdf = "Solo se permiten archivos PDF válidos.";
+            } else {
+                $dir_destino = realpath(__DIR__ . '/../guias');
+                if ($dir_destino === false) {
+                    $dir_destino = __DIR__ . '/../guias';
+                    mkdir($dir_destino, 0777, true);
+                }
+
+                $nombre_archivo = time() . "_" . bin2hex(random_bytes(6)) . ".pdf";
+                $ruta_absoluta = rtrim($dir_destino, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $nombre_archivo;
+
+                if (move_uploaded_file($archivo['tmp_name'], $ruta_absoluta)) {
+                    $ruta_bd = "guias/" . $nombre_archivo;
+                    $sql_mat = "INSERT INTO materiales_parcial (id_asignatura, num_parcial, titulo_material, archivo_pdf, boleta_docente)
+                                VALUES (?, ?, ?, ?, ?)";
+                    $stmt_m = mysqli_prepare($conexion, $sql_mat);
+                    mysqli_stmt_bind_param($stmt_m, "iisss", $id_asignatura, $num_parcial, $titulo_material, $ruta_bd, $_SESSION['boleta']);
+
+                    if (mysqli_stmt_execute($stmt_m)) {
+                        mysqli_stmt_close($stmt_m);
+                        header("Location: docente.php?material_subido=1");
+                        exit();
+                    }
+
+                    mysqli_stmt_close($stmt_m);
+                    unlink($ruta_absoluta);
+                    $mensaje_pdf = "El archivo se recibió, pero no pudo registrarse en el sistema.";
+                } else {
+                    $mensaje_pdf = "No fue posible guardar el archivo en el servidor.";
+                }
+            }
         }
     }
+}
+
+// Procesar eliminación de un material PDF publicado
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_material'])) {
+    $id_material = intval($_POST['eliminar_material']);
+
+    if ($id_material > 0) {
+        if ($_SESSION['id_rol'] == 1) {
+            $sql_buscar = "SELECT id_material, archivo_pdf FROM materiales_parcial WHERE id_material = ?";
+            $stmt_buscar = mysqli_prepare($conexion, $sql_buscar);
+            mysqli_stmt_bind_param($stmt_buscar, "i", $id_material);
+        } else {
+            $sql_buscar = "SELECT id_material, archivo_pdf FROM materiales_parcial
+                           WHERE id_material = ? AND boleta_docente = ?";
+            $stmt_buscar = mysqli_prepare($conexion, $sql_buscar);
+            mysqli_stmt_bind_param($stmt_buscar, "is", $id_material, $_SESSION['boleta']);
+        }
+
+        mysqli_stmt_execute($stmt_buscar);
+        $material = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_buscar));
+        mysqli_stmt_close($stmt_buscar);
+
+        if ($material) {
+            $sql_eliminar = "DELETE FROM materiales_parcial WHERE id_material = ?";
+            $stmt_eliminar = mysqli_prepare($conexion, $sql_eliminar);
+            mysqli_stmt_bind_param($stmt_eliminar, "i", $id_material);
+
+            if (mysqli_stmt_execute($stmt_eliminar)) {
+                mysqli_stmt_close($stmt_eliminar);
+
+                $ruta_bd = str_replace('\\', '/', trim($material['archivo_pdf']));
+                if (strpos($ruta_bd, 'guias/') === 0) {
+                    $ruta_archivo = realpath(__DIR__ . '/../') . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $ruta_bd);
+                    if ($ruta_archivo !== false && is_file($ruta_archivo)) {
+                        unlink($ruta_archivo);
+                    }
+                }
+
+                header("Location: docente.php?material_eliminado=1");
+                exit();
+            }
+
+            mysqli_stmt_close($stmt_eliminar);
+        }
+
+        header("Location: docente.php?material_eliminado=0");
+        exit();
+    }
+}
+
+// Consultar los archivos publicados por el docente que inició sesión
+if ($_SESSION['id_rol'] == 1) {
+    $sql_materiales = "SELECT id_material, num_parcial, titulo_material, archivo_pdf, fecha_subida
+                       FROM materiales_parcial
+                       ORDER BY fecha_subida DESC";
+    $resultado_materiales = mysqli_query($conexion, $sql_materiales);
+} else {
+    $sql_materiales = "SELECT id_material, num_parcial, titulo_material, archivo_pdf, fecha_subida
+                       FROM materiales_parcial
+                       WHERE boleta_docente = ?
+                       ORDER BY fecha_subida DESC";
+    $stmt_materiales = mysqli_prepare($conexion, $sql_materiales);
+    mysqli_stmt_bind_param($stmt_materiales, "s", $_SESSION['boleta']);
+    mysqli_stmt_execute($stmt_materiales);
+    $resultado_materiales = mysqli_stmt_get_result($stmt_materiales);
 }
 ?>
 
@@ -60,6 +158,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['subir_material'])) {
       <h2 style="color: #6c1d45; margin: 0 0 5px 0;">Panel Docente: Gestión de Prácticas y Vales</h2>
       <p style="margin: 0; color: #4b5563;">Profesor: <strong><?php echo htmlspecialchars($_SESSION['nombre']); ?></strong> | No. Empleado: <strong><?php echo htmlspecialchars($_SESSION['boleta']); ?></strong></p>
     </div>
+
+    <?php if (isset($_GET['material_subido'])): ?>
+      <div style="background:#dcfce7; color:#15803d; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold;">
+        ✅ El material PDF quedó guardado y publicado correctamente.
+      </div>
+    <?php elseif (isset($_GET['material_eliminado']) && $_GET['material_eliminado'] == '1'): ?>
+      <div style="background:#dcfce7; color:#15803d; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold;">
+        ✅ El material PDF fue eliminado correctamente.
+      </div>
+    <?php elseif (isset($_GET['material_eliminado']) && $_GET['material_eliminado'] == '0'): ?>
+      <div style="background:#fee2e2; color:#b91c1c; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold;">
+        No fue posible eliminar el material solicitado.
+      </div>
+    <?php elseif (!empty($mensaje_pdf)): ?>
+      <div style="background:#fee2e2; color:#b91c1c; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold;">
+        <?php echo htmlspecialchars($mensaje_pdf); ?>
+      </div>
+    <?php endif; ?>
 
     <!-- MÓDULO 1: PUBLICAR/AGENDAR FECHA Y HORA DE PRÁCTICAS -->
     <section style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px;">
@@ -113,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['subir_material'])) {
     <!-- MÓDULO 2: SUBIR MATERIAL DIDÁCTICO PDF POR PARCIAL -->
     <section style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px;">
       <h3 style="margin: 0 0 15px 0; color: #1f2937;">📚 Subir Material Didáctico por Parcial</h3>
-      <form action="docente.php" method="POST" enctype="multipart/form-data" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+      <form id="subir-material-form" action="docente.php" method="POST" enctype="multipart/form-data" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
         <input type="hidden" name="subir_material" value="1">
         <input type="hidden" name="id_asignatura" value="1">
 
@@ -135,13 +251,86 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['subir_material'])) {
           <label style="display:block; font-size:0.85rem; font-weight:bold; margin-bottom:5px;">Archivo PDF:</label>
           <input type="file" name="archivo_pdf" accept=".pdf" required style="width:100%; padding:6px; border:1px solid #ccc; border-radius:4px;">
         </div>
-
-        <div style="grid-column: 1 / -1;">
-          <button type="submit" style="background: #b38e5d; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
-            📤 Subir Archivo al Parcial
-          </button>
-        </div>
       </form>
+
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:15px;">
+        <button type="submit" form="subir-material-form" style="background: #b38e5d; color: white; padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+          📤 Subir Archivo al Parcial
+        </button>
+
+        <?php
+        $hay_materiales = $resultado_materiales && mysqli_num_rows($resultado_materiales) > 0;
+        ?>
+        <form action="docente.php" method="POST" style="display:flex; align-items:center; gap:8px;" onsubmit="return confirm('¿Eliminar el archivo PDF seleccionado? Esta acción no se puede deshacer.');">
+          <select name="eliminar_material" required <?php echo $hay_materiales ? '' : 'disabled'; ?> style="min-width:220px; padding:9px; border:1px solid #ccc; border-radius:4px;">
+            <option value=""><?php echo $hay_materiales ? 'Seleccionar archivo para eliminar' : 'No hay archivos publicados'; ?></option>
+            <?php if ($hay_materiales): ?>
+              <?php mysqli_data_seek($resultado_materiales, 0); ?>
+              <?php while ($material_eliminar = mysqli_fetch_assoc($resultado_materiales)): ?>
+                <option value="<?php echo intval($material_eliminar['id_material']); ?>">
+                  <?php echo htmlspecialchars($material_eliminar['titulo_material']); ?> - Parcial <?php echo intval($material_eliminar['num_parcial']); ?>
+                </option>
+              <?php endwhile; ?>
+            <?php endif; ?>
+          </select>
+          <button type="submit" <?php echo $hay_materiales ? '' : 'disabled'; ?> style="background:#b91c1c; color:white; padding:10px 16px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; opacity:<?php echo $hay_materiales ? '1' : '0.55'; ?>;">
+            🗑️ Eliminar archivo
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- MATERIALES PUBLICADOS POR EL DOCENTE -->
+    <section style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px;">
+      <h3 style="margin: 0 0 15px 0; color: #1f2937;">🗂️ Archivos PDF publicados</h3>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+          <thead>
+            <tr style="background:#6c1d45; color:white;">
+              <th style="padding:10px; text-align:left;">Título</th>
+              <th style="padding:10px; text-align:left;">Parcial</th>
+              <th style="padding:10px; text-align:left;">Fecha</th>
+              <th style="padding:10px; text-align:center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if ($resultado_materiales && mysqli_num_rows($resultado_materiales) > 0): ?>
+              <?php mysqli_data_seek($resultado_materiales, 0); ?>
+              <?php while ($material = mysqli_fetch_assoc($resultado_materiales)): ?>
+                <?php
+                $ruta_archivo = trim($material['archivo_pdf']);
+                if (strpos($ruta_archivo, 'guias/') === 0) {
+                    $ruta_archivo = '../' . $ruta_archivo;
+                } elseif (strpos($ruta_archivo, '../') !== 0 && strpos($ruta_archivo, '/') !== 0) {
+                    $ruta_archivo = '../guias/' . basename($ruta_archivo);
+                }
+                ?>
+                <tr style="border-bottom:1px solid #eee;">
+                  <td style="padding:10px;">
+                    <a href="<?php echo htmlspecialchars($ruta_archivo); ?>" target="_blank" style="color:#2563eb;">
+                      <?php echo htmlspecialchars($material['titulo_material']); ?>
+                    </a>
+                  </td>
+                  <td style="padding:10px;">Parcial <?php echo intval($material['num_parcial']); ?></td>
+                  <td style="padding:10px;"><?php echo htmlspecialchars($material['fecha_subida']); ?></td>
+                  <td style="padding:10px; text-align:center;">
+                    <form action="docente.php" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este archivo PDF? Esta acción no se puede deshacer.');">
+                      <input type="hidden" name="eliminar_material" value="<?php echo intval($material['id_material']); ?>">
+                      <button type="submit" style="background:#b91c1c; color:white; padding:6px 10px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">
+                        🗑️ Eliminar
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <?php endwhile; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="4" style="padding:15px; text-align:center; color:#6b7280;">No hay archivos PDF publicados.</td>
+              </tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- MÓDULO 3: VALIDACIÓN DIGITAL DE VALES DE ALUMNOS -->
