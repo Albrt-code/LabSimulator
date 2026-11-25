@@ -14,3 +14,6 @@ desktop.ini
 # Credenciales o claves sensibles (base de datos o API Keys)
 config.local.php
 .env
+
+# Archivos PDF cargados desde el panel (timestamp + sufijo aleatorio)
+guias/[0-9]*_[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].pdf
