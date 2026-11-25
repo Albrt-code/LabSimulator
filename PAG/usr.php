@@ -12,6 +12,38 @@ include '../EXTEND/header.php';
 
 $boleta_usuario = $_SESSION['boleta'];
 $es_docente = ($_SESSION['id_rol'] == 2);
+
+$materiales_por_parcial = array(1 => array(), 2 => array(), 3 => array());
+$sql_materiales = "SELECT id_material, num_parcial, titulo_material, archivo_pdf
+                   FROM materiales_parcial
+                   WHERE num_parcial BETWEEN 1 AND 3
+                   ORDER BY num_parcial ASC, id_material DESC";
+$resultado_materiales = mysqli_query($conexion, $sql_materiales);
+
+if ($resultado_materiales) {
+    while ($material = mysqli_fetch_assoc($resultado_materiales)) {
+        $materiales_por_parcial[(int) $material['num_parcial']][] = $material;
+    }
+}
+
+$materiales_del_docente = array();
+if ($es_docente) {
+    $sql_materiales_docente = "SELECT id_material, num_parcial, titulo_material
+                               FROM materiales_parcial
+                               WHERE boleta_docente = ?
+                               ORDER BY fecha_subida DESC";
+    $stmt_materiales_docente = mysqli_prepare($conexion, $sql_materiales_docente);
+    mysqli_stmt_bind_param($stmt_materiales_docente, "s", $_SESSION['boleta']);
+    mysqli_stmt_execute($stmt_materiales_docente);
+    $resultado_materiales_docente = mysqli_stmt_get_result($stmt_materiales_docente);
+
+    if ($resultado_materiales_docente) {
+        while ($material_docente = mysqli_fetch_assoc($resultado_materiales_docente)) {
+            $materiales_del_docente[] = $material_docente;
+        }
+    }
+    mysqli_stmt_close($stmt_materiales_docente);
+}
 ?>
 
 <main class="main-content" style="padding: 30px 20px; background-color: #f8f9fa; min-height: calc(100vh - 350px);">
@@ -115,6 +147,22 @@ $es_docente = ($_SESSION['id_rol'] == 2);
             </button>
           </div>
         </form>
+
+        <form action="docente.php" method="POST" style="display:flex; align-items:center; gap:8px; margin-top:15px; flex-wrap:wrap;" onsubmit="return confirm('¿Eliminar el archivo PDF seleccionado? Esta acción no se puede deshacer.');">
+          <select name="eliminar_material" required style="min-width:220px; padding:9px; border:1px solid #ccc; border-radius:4px;">
+            <option value="">Seleccionar archivo para eliminar</option>
+            <?php if (count($materiales_del_docente) > 0): ?>
+              <?php foreach ($materiales_del_docente as $material_docente): ?>
+                <option value="<?php echo intval($material_docente['id_material']); ?>">
+                  <?php echo htmlspecialchars($material_docente['titulo_material']); ?> - Parcial <?php echo intval($material_docente['num_parcial']); ?>
+                </option>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </select>
+          <button type="submit" <?php echo count($materiales_del_docente) > 0 ? '' : 'disabled'; ?> style="background:#b91c1c; color:white; padding:10px 16px; border:none; border-radius:4px; font-weight:bold; cursor:pointer; opacity:<?php echo count($materiales_del_docente) > 0 ? '1' : '0.55'; ?>;">
+            🗑️ Eliminar archivo
+          </button>
+        </form>
       </section>
 
       <!-- MÓDULO 3: VALIDACIÓN DIGITAL DE VALES DE ALUMNOS -->
@@ -170,25 +218,36 @@ $es_docente = ($_SESSION['id_rol'] == 2);
         <h3 style="margin: 0 0 15px 0; color: #1f2937; font-size: 1.2rem;">📚 Material Didáctico y Guías Didácticas (por Parcial)</h3>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px;">
-          <div style="border: 1px solid #e5e7eb; border-top: 4px solid #6c1d45; border-radius: 8px; padding: 16px; background: #fafafa;">
-            <h4 style="margin: 0 0 12px 0; color: #6c1d45;">Primer Parcial</h4>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-              <li style="margin-bottom: 8px; font-size: 0.88rem;">📄 <a href="../guias/manual_p1.pdf" target="_blank" style="color: #2563eb; text-decoration: none;">Manual_Practicas_P1.pdf</a></li>
-              <li style="font-size: 0.88rem;">📄 <a href="../guias/formulario_mecanica.pdf" target="_blank" style="color: #2563eb; text-decoration: none;">Formulario_Mecanica.pdf</a></li>
-            </ul>
-          </div>
-
-          <div style="border: 1px solid #e5e7eb; border-top: 4px solid #b38e5d; border-radius: 8px; padding: 16px; background: #fafafa;">
-            <h4 style="margin: 0 0 12px 0; color: #b38e5d;">Segundo Parcial</h4>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-              <li style="font-size: 0.88rem;">📄 <a href="../guias/guia_cuerdas.pdf" target="_blank" style="color: #2563eb; text-decoration: none;">Guia_Ondas_y_Cuerdas.pdf</a></li>
-            </ul>
-          </div>
-
-          <div style="border: 1px solid #e5e7eb; border-top: 4px solid #6b7280; border-radius: 8px; padding: 16px; background: #fafafa;">
-            <h4 style="margin: 0 0 12px 0; color: #374151;">Tercer Parcial</h4>
-            <p style="font-size: 0.85rem; color: #9ca3af; margin: 0;">Sin archivos subidos aún por el docente.</p>
-          </div>
+          <?php
+          $titulos_parcial = array(1 => 'Primer Parcial', 2 => 'Segundo Parcial', 3 => 'Tercer Parcial');
+          $colores_parcial = array(1 => '#6c1d45', 2 => '#b38e5d', 3 => '#6b7280');
+          ?>
+          <?php for ($parcial = 1; $parcial <= 3; $parcial++): ?>
+            <div style="border: 1px solid #e5e7eb; border-top: 4px solid <?php echo $colores_parcial[$parcial]; ?>; border-radius: 8px; padding: 16px; background: #fafafa;">
+              <h4 style="margin: 0 0 12px 0; color: <?php echo $colores_parcial[$parcial]; ?>;"><?php echo $titulos_parcial[$parcial]; ?></h4>
+              <?php if (count($materiales_por_parcial[$parcial]) > 0): ?>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                  <?php foreach ($materiales_por_parcial[$parcial] as $material): ?>
+                    <?php
+                    $ruta_archivo = trim($material['archivo_pdf']);
+                    if (strpos($ruta_archivo, 'guias/') === 0) {
+                        $ruta_archivo = '../' . $ruta_archivo;
+                    } elseif (strpos($ruta_archivo, '../') !== 0 && strpos($ruta_archivo, '/') !== 0) {
+                        $ruta_archivo = '../guias/' . basename($ruta_archivo);
+                    }
+                    ?>
+                    <li style="margin-bottom: 8px; font-size: 0.88rem;">
+                      📄 <a href="<?php echo htmlspecialchars($ruta_archivo); ?>" target="_blank" style="color: #2563eb; text-decoration: none;">
+                        <?php echo htmlspecialchars($material['titulo_material']); ?>
+                      </a>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              <?php else: ?>
+                <p style="font-size: 0.85rem; color: #9ca3af; margin: 0;">Sin archivos subidos aún por el docente.</p>
+              <?php endif; ?>
+            </div>
+          <?php endfor; ?>
         </div>
       </section>
 
